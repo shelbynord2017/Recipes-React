@@ -2,7 +2,7 @@ import React from 'react'
 import './Recipes.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-
+import Nutrition from '../../nutrition/Nutrition';
 
 
 const Recipes = () => {
@@ -10,6 +10,35 @@ const Recipes = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const pageSize = 5
     const [meals, setMeals] = useState([]);
+    const [nutrition, setNutrition] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [selectedMeal, setSelectedMeal] = useState(null);
+
+  async function sendData(meal) {
+    const response = await axios.post(
+    `https://api.edamam.com/api/nutrition-details?app_id=${import.meta.env.VITE_APP_ID}&app_key=${import.meta.env.VITE_APP_KEY}`,
+    {
+      "ingr": meal.ingredients.map(ingr => `${ingr.measure} ${ingr.name}`)
+    }
+  );
+  setNutrition(response.data);
+  return response.data
+  }
+
+  async function fetchNutrition(meal) {
+    setLoading(true);
+    setSelectedMeal(meal.idMeal);
+    const ingredients = Array.from({ length: 20 }, (_, i) => i + 1)
+      .filter((i) => meal[`strIngredient${i}`]?.trim())
+      .map((i) => ({
+        name: meal[`strIngredient${i}`],
+        measure: meal[`strMeasure${i}`]?.trim() || "",
+      }));
+
+    const data = await sendData({ ingredients });
+    setNutrition(data);
+    setLoading(false);
+  }
 
 
   async function fetchMeals(searchTerm) {
@@ -45,7 +74,9 @@ const Recipes = () => {
           <figure className="meal__img--wrapper">
               <img src={meal.strMealThumb} className="meal__img"/>
           </figure>
-          <button>View Nutrition</button>
+          <button onClick={() => fetchNutrition(meal)}>View Nutrition</button>
+          {loading && selectedMeal === meal.idMeal && <p>Loading nutrition data...</p>}
+          {nutrition && selectedMeal === meal.idMeal && <Nutrition nutrition={nutrition} />}
       </div>
       ))}
       <button onClick={() => {setCurrentPage(prev => prev - 1); window.scrollTo(0, 0); }} disabled={currentPage === 1}>Prev</button>

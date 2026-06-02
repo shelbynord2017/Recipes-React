@@ -1,34 +1,23 @@
-import React from 'react'
-import './Nutrition.css'
-import axios from 'axios'
-import { useState } from 'react'
+import React from 'react';
+import './Nutrition.css';
 
-
-const Nutrition = () => {
-
-  const [nutritionData, setNutritionData] = useState([]);
-
-async function sendData(meal) {
-  const response = await axios.post(
-  `https://api.edamam.com/api/nutrition-details?app_id=${process.env.REACT_APP_EDAMAM_ID}&app_key=${process.env.REACT_APP_EDAMAM_KEY}`,
-  {
-    ingr: Array.from({length: 20}, (_, i) => i + 1)
-      .filter(i => meal[`strIngredient${i}`]?.trim())
-      .map(i => `${meal[`strMeasure${i}`]} ${meal[`strIngredient${i}`]}`)
+const Nutrition = ({ nutrition }) => {
+  if (!nutrition) {
+    return null;
   }
-  setNutritionData(response.data)
-
-);
-}
-
-
-
 
   return (
-  //   .map( => (
-    <div>nutrition</div>
-  // )
-  )
-}
+    <div>
+      <h4>Nutrition Facts</h4>
+      <p>Calories: {nutrition.calories}</p>
+      <h5>Total Nutrients</h5>
+      <ul>
+        {nutrition.totalNutrients && Object.values(nutrition.totalNutrients).map(nutrient => (
+          <li key={nutrient.label}>{nutrient.label}: {nutrient.quantity.toFixed(2)} {nutrient.unit}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-export default Nutrition
+export default Nutrition;
