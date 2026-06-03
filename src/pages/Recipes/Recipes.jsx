@@ -7,8 +7,12 @@ import Nutrition from '../../nutrition/Nutrition';
 
 const Recipes = () => {
 
-    const appId = import.meta.env.VITE_EDAMAM_APP_ID;
-    const appKey = import.meta.env.VITE_EDAMAM_APP_KEY;
+    // const appId = import.meta.env.VITE_EDAMAM_APP_ID;
+    // const appKey = import.meta.env.VITE_EDAMAM_APP_KEY;
+    // console.log(appId, appKey)
+
+    const appKey = import.meta.env.VITE_CALORIENINJA_KEY;
+
     const [currentPage, setCurrentPage] = useState(1)
     const pageSize = 5
     const [meals, setMeals] = useState([]);
@@ -16,32 +20,68 @@ const Recipes = () => {
     const [loading, setLoading] = useState(false);
     const [selectedMeal, setSelectedMeal] = useState(null);
 
-  async function sendData(meal) {
-    const response = await axios.post(
-    `https://api.edamam.com/api/nutrition-details?app_id=${appId}&app_key=${appKey}`,
-    {
-      "ingr": meal.ingredients.map(ingr => `${ingr.measure} ${ingr.name}`)
-    }
-  );
-  setNutrition(response.data);
-  return response.data
-  }
+
+
+//   async function sendData(meal) {
+//     const response = await axios.post( //The Edamam credentials are considered incorrect. Waiting email reply. 
+//     `https://api.edamam.com/api/nutrition-details?app_id=${encodeURIComponent(appId)}&app_key=${encodeURIComponent(appKey)}`,
+//     {
+//       "ingr": meal.ingredients.map(ingr => `${ingr.measure} ${ingr.name}`)
+//     }
+//   );
+//   setNutrition(response.data);
+//   return response.data
+//   }
 
   
-  async function fetchNutrition(meal) {
-    try {
-    setLoading(true);
-    setSelectedMeal(meal.idMeal);
-    const ingredients = Array.from({ length: 20 }, (_, i) => i + 1)
-      .filter((i) => meal[`strIngredient${i}`]?.trim())
-      .map((i) => ({
-        name: meal[`strIngredient${i}`],
-        measure: meal[`strMeasure${i}`],
-      }));
+//   async function fetchNutrition(meal) {
+//     try {
+//     setLoading(true);
+//     setSelectedMeal(meal.idMeal);
+//     const ingredients = Array.from({ length: 20 }, (_, i) => i + 1)
+//       .filter((i) => meal[`strIngredient${i}`]?.trim())
+//       .map((i) => ({
+//         name: meal[`strIngredient${i}`],
+//         measure: meal[`strMeasure${i}`],
+//       }));
 
-    await sendData({ ingredients });
-    
-  } catch (error) {
+//     await sendData({ ingredients });
+
+//   } catch (error) {
+//     console.error("Nutrition API error:", error);
+//     alert("There was an issue loading the nutrition data.");
+//   } finally {
+//     setLoading(false);
+//   }
+// }
+
+async function fetchNutrition(meal) {
+  try {
+  setLoading(true);
+  setSelectedMeal(meal.idMeal);
+  const query = Array.from({ length: 20 }, (_, i) => i + 1)
+  .filter(i => meal[`strIngredient${i}`]?.trim())
+  .map(i => {
+    const ingredient = meal[`strIngredient${i}`].trim();
+    const measure = meal[`strMeasure${i}`]?.trim() || "";
+    // Strip fractions and extra descriptors
+    const cleanMeasure = measure
+      .replace(/[¼½¾⅓⅔⅛]/g, (m) => 
+        ({ "¼":"0.25","½":"0.5","¾":"0.75","⅓":"0.33","⅔":"0.67","⅛":"0.125" }[m]))
+      .replace(/[^a-zA-Z0-9.\s]/g, "")
+      .trim();
+    return `${cleanMeasure} ${ingredient}`;
+  })
+  .join(", ");
+              
+
+  const response = await axios.get("https://api.calorieninjas.com/v1/nutrition", {
+  params: { query },
+  headers: { "X-Api-Key": encodeURIComponent(appKey) },
+});
+
+setNutrition(response.data.items);
+ } catch (error) {
     console.error("Nutrition API error:", error);
     alert("There was an issue loading the nutrition data.");
   } finally {
