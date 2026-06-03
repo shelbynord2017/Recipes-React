@@ -7,6 +7,8 @@ import Nutrition from '../../nutrition/Nutrition';
 
 const Recipes = () => {
 
+    const appId = import.meta.env.VITE_EDAMAM_APP_ID;
+    const appKey = import.meta.env.VITE_EDAMAM_APP_KEY;
     const [currentPage, setCurrentPage] = useState(1)
     const pageSize = 5
     const [meals, setMeals] = useState([]);
@@ -16,7 +18,7 @@ const Recipes = () => {
 
   async function sendData(meal) {
     const response = await axios.post(
-    `https://api.edamam.com/api/nutrition-details?app_id=${import.meta.env.VITE_APP_ID}&app_key=${import.meta.env.VITE_APP_KEY}`,
+    `https://api.edamam.com/api/nutrition-details?app_id=${appId}&app_key=${appKey}`,
     {
       "ingr": meal.ingredients.map(ingr => `${ingr.measure} ${ingr.name}`)
     }
@@ -25,20 +27,27 @@ const Recipes = () => {
   return response.data
   }
 
+  
   async function fetchNutrition(meal) {
+    try {
     setLoading(true);
     setSelectedMeal(meal.idMeal);
     const ingredients = Array.from({ length: 20 }, (_, i) => i + 1)
       .filter((i) => meal[`strIngredient${i}`]?.trim())
       .map((i) => ({
         name: meal[`strIngredient${i}`],
-        measure: meal[`strMeasure${i}`]?.trim() || "",
+        measure: meal[`strMeasure${i}`],
       }));
 
-    const data = await sendData({ ingredients });
-    setNutrition(data);
+    await sendData({ ingredients });
+    
+  } catch (error) {
+    console.error("Nutrition API error:", error);
+    alert("There was an issue loading the nutrition data.");
+  } finally {
     setLoading(false);
   }
+}
 
 
   async function fetchMeals(searchTerm) {

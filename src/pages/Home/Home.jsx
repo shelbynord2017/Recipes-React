@@ -10,9 +10,9 @@ const Home = () => {
     <div className="recipe__wrapper">
       <ul className="ingredients"></ul>
     </div>
-    <div class="btns">
-      <button id="prevBtn" onclick="">Previous</button>
-      <button id="nextBtn" onclick="">Next</button>
+    <div className="btns">
+      <button id="prevBtn" onClick={() => {}}>Previous</button>
+      <button id="nextBtn" onClick={() => {}}>Next</button>
     </div>
 </div>
 
