@@ -11,7 +11,14 @@ const Nutrition = ({ nutrition }) => {
       <h4>Nutrition Facts</h4>
         {nutrition.map((item, index) => (
           <li key={index}>
-            {item.name}: {item.calories} cal | Protein: {item.protein_g}g | Fat: {item.fat_total_g}g
+            {item.name}: {item.calories} cal | 
+            Saturated Fat: {item.fat_saturated_g}g | 
+            Fat: {item.fat_total_g}g | 
+            Sodium: {item.sodium_mg}mg | 
+            Cholesterol: {item.cholesterol_mg}mg | 
+            Fiber: {item.fiber_g}g | 
+            Carbohydrates: {item.carbohydrates_total_g}g | 
+            Protein: {item.protein_g}g 
           </li>
         ))}
     </div>

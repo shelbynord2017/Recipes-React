@@ -3,7 +3,6 @@
     width: 100%;
   height: 100px;
   display: flex;
-  margin-bottom: 20px;
 }
 
 .nav__row {
@@ -13,17 +12,17 @@
     width: 100%;
     margin: 0 auto;
     padding-top: 20px;
-    padding-bottom: 20px;
-    background-color: rgba(190, 122, 50, 0.897);
+    background-color: rgb(169, 101, 23);
 }
 
 .logo__wrapper {
     margin-left: 24px;
+    margin-bottom: 7px;
 }
 
-/* .nav__logo--img {
-    background-color: 
-} */
+.nav__logo--img {
+    height: 70px;
+}
 
 .nav__links {
     display: flex;
@@ -34,7 +33,7 @@
 .nav__link {
     display: flex;
     text-decoration: none;
-    color: #242424;
+    color: #fff;
     font-size: 18px;
     font-weight: 400;
     padding: 8px;

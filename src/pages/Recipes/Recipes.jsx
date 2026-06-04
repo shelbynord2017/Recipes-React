@@ -3,20 +3,19 @@ import './Recipes.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Nutrition from '../../nutrition/Nutrition';
+import { useNavigate } from 'react-router-dom'
 
 
-const Recipes = () => {
+const Recipes = ({ meals, setNutrition, setMeals }) => {
 
     // const appId = import.meta.env.VITE_EDAMAM_APP_ID;
     // const appKey = import.meta.env.VITE_EDAMAM_APP_KEY;
     // console.log(appId, appKey)
-
+    let navigate = useNavigate();
     const appKey = import.meta.env.VITE_CALORIENINJA_KEY;
 
     const [currentPage, setCurrentPage] = useState(1)
     const pageSize = 5
-    const [meals, setMeals] = useState([]);
-    const [nutrition, setNutrition] = useState(null);
     const [loading, setLoading] = useState(false);
     const [selectedMeal, setSelectedMeal] = useState(null);
 
@@ -77,25 +76,17 @@ async function fetchNutrition(meal) {
 
   const response = await axios.get("https://api.calorieninjas.com/v1/nutrition", {
   params: { query },
-  headers: { "X-Api-Key": encodeURIComponent(appKey) },
+  headers: { "X-Api-Key": appKey },
 });
 
 setNutrition(response.data.items);
- } catch (error) {
+  } catch (error) {
     console.error("Nutrition API error:", error);
     alert("There was an issue loading the nutrition data.");
   } finally {
     setLoading(false);
   }
 }
-
-
-  async function fetchMeals(searchTerm) {
-            const { data } = await axios.get(
-                `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchTerm}`)
-                setMeals(data.meals);
-                console.log(data);
-        }
 
     useEffect(() => {
         fetchMeals('chicken');
@@ -123,9 +114,9 @@ setNutrition(response.data.items);
           <figure className="meal__img--wrapper">
               <img src={meal.strMealThumb} className="meal__img"/>
           </figure>
-          <button onClick={() => fetchNutrition(meal)}>View Nutrition</button>
+          <button onClick={() => {fetchNutrition(meal); navigate('/nutrition');}}>View Nutrition</button>
           {loading && selectedMeal === meal.idMeal && <p>Loading nutrition data...</p>}
-          {nutrition && selectedMeal === meal.idMeal && <Nutrition nutrition={nutrition} />}
+          
       </div>
       ))}
       <button onClick={() => {setCurrentPage(prev => prev - 1); window.scrollTo(0, 0); }} disabled={currentPage === 1}>Prev</button>

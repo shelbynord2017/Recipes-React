@@ -1,0 +1,84 @@
+.home__text{
+    position: relative;
+    height: 300px;
+}
+.home__banner{
+    width: 100%;
+    height: 300px;
+    background-image: url('../../assets/restaurant__banner.jpg');
+    background-size: cover;
+    background-position: center;
+    margin-top: 0;
+    position: absolute;
+}
+.home__title{
+    position: absolute;
+    margin-top: 120px;
+    margin-left: 60px;
+    color: #fff;
+    font-weight: 900;
+}
+
+.home__description{
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.home__subtitle{
+    margin-bottom: 10px;
+}
+.home__para{
+    line-height: 1.5;
+    margin-bottom: 70px;
+    width: 800px;
+}
+
+/*search bar*/
+
+.search__bar--wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.search__bar {
+    border: 1px solid #a59e9e;
+    width: 450px;
+    padding: 8px 12px;
+    border-radius: 25px;
+}
+.search__input {
+    border: 0;
+    outline: 0;
+    width: 400px;
+    background: transparent;
+}
+.search__input:focus{
+    outline: 0;
+}
+.search__bar:hover{
+    border-color: #696262;
+}
+.search__bar:focus-within{
+    border-color: rgb(169, 101, 23);
+}
+.search__icon{
+    width: 15px;
+    color: #242424;
+}
+
+/* CATEGORIES */
+
+.home__categories{
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.home__categories ul{
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    list-style: none;
+}
