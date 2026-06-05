@@ -1,41 +1,95 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Recipes from './pages/Recipes/Recipes';
 import Nutrition from './nutrition/Nutrition';
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function App() {
 
   const [meals, setMeals] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [nutrition, setNutrition] = useState(null);
   let navigate = useNavigate();
 
   
-  async function fetchMeals(searchTerm) {
+  const fetchMeals = async (searchQuery) => {
+    try {
       const { data } = await axios.get(
-          `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchTerm}`);
-          setMeals(data.meals);
-    }  
-  
-  function onSearch() {
-      fetchMeals(searchTerm);
-      navigate('/recipes');
+        `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchQuery}`,
+      );
+      setMeals(data.meals || []);
+      console.log(data.meals)
+    } catch (error) {
+      console.error("Error fetching meals:", error);
+      setMeals([]);
     }
+  };
+
+  const onSearch = () => {
+    setSelectedCategory("")
+    fetchMeals(searchTerm);
+    navigate("/recipes");
+  };
+
+  const fetchByCategory = async (category)=> {
+    setSelectedCategory(category)
+    try {
+      const { data } = await axios.get(
+        `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`,
+      );
+
+      const categoryMeals = data.meals || [];
+
+      const fullMeals = await Promise.all(
+        categoryMeals.map(async (meal) => {
+          console.log("meal id:", meal.idMeal)
+          const { data } = await axios.get(
+            `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${meal.idMeal}`
+          );
+
+          return data.meals[0];
+        })
+      );
+      console.log("category results:", fullMeals)
+      setMeals(fullMeals);
+      console.log(category)
+      navigate("/recipes")
+    } catch (error) {
+      console.error("Error fetching meals:", error);
+      setMeals([]);
+    }
+  }
 
 
 
   return (
     <div className="App">
         <Routes>
-          <Route path="/" element={<Home onSearch={onSearch}/>} />
-          <Route path="/recipes" element={<Recipes meals={meals} setNutrition={setNutrition} />} />
-          <Route path="/nutrition" element={<Nutrition nutrition={nutrition} />} />
+          <Route path="/" element={
+            <Home 
+              setSearchTerm={setSearchTerm}
+              searchTerm={searchTerm}
+              onSearch={onSearch}
+              fetchByCategory={fetchByCategory}
+            />} 
+          />
+          <Route path="/recipes" element={
+            <Recipes 
+              meals={meals} 
+              setNutrition={setNutrition}
+              fetchMeals={fetchMeals}  
+              selectedCategory={selectedCategory}
+              />} 
+            />
+          <Route path="/nutrition" element={
+            <Nutrition nutrition={nutrition} />} 
+          />
         </Routes>
 
     </div>
   )
 }
 
-export default App
+export default App;

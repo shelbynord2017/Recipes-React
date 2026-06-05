@@ -75,10 +75,12 @@
     margin-top: 50px;
     margin-bottom: 50px;
 }
-
 .home__categories ul{
     display: flex;
     justify-content: center;
     gap: 50px;
     list-style: none;
+}
+.home__categories li {
+  cursor: pointer;
 }

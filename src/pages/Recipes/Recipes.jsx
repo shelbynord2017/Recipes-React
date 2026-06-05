@@ -1,4 +1,3 @@
-import React from 'react'
 import './Recipes.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
@@ -6,12 +5,8 @@ import Nutrition from '../../nutrition/Nutrition';
 import { useNavigate } from 'react-router-dom'
 
 
-const Recipes = ({ meals, setNutrition, setMeals }) => {
-
-    // const appId = import.meta.env.VITE_EDAMAM_APP_ID;
-    // const appKey = import.meta.env.VITE_EDAMAM_APP_KEY;
-    // console.log(appId, appKey)
-    let navigate = useNavigate();
+const Recipes = ({ meals, setNutrition, fetchMeals, searchTerm, selectedCategory }) => {
+    const navigate = useNavigate();
     const appKey = import.meta.env.VITE_CALORIENINJA_KEY;
 
     const [currentPage, setCurrentPage] = useState(1)
@@ -19,67 +14,46 @@ const Recipes = ({ meals, setNutrition, setMeals }) => {
     const [loading, setLoading] = useState(false);
     const [selectedMeal, setSelectedMeal] = useState(null);
 
-
-
-//   async function sendData(meal) {
-//     const response = await axios.post( //The Edamam credentials are considered incorrect. Waiting email reply. 
-//     `https://api.edamam.com/api/nutrition-details?app_id=${encodeURIComponent(appId)}&app_key=${encodeURIComponent(appKey)}`,
-//     {
-//       "ingr": meal.ingredients.map(ingr => `${ingr.measure} ${ingr.name}`)
-//     }
-//   );
-//   setNutrition(response.data);
-//   return response.data
-//   }
-
-  
-//   async function fetchNutrition(meal) {
-//     try {
-//     setLoading(true);
-//     setSelectedMeal(meal.idMeal);
-//     const ingredients = Array.from({ length: 20 }, (_, i) => i + 1)
-//       .filter((i) => meal[`strIngredient${i}`]?.trim())
-//       .map((i) => ({
-//         name: meal[`strIngredient${i}`],
-//         measure: meal[`strMeasure${i}`],
-//       }));
-
-//     await sendData({ ingredients });
-
-//   } catch (error) {
-//     console.error("Nutrition API error:", error);
-//     alert("There was an issue loading the nutrition data.");
-//   } finally {
-//     setLoading(false);
-//   }
-// }
-
-async function fetchNutrition(meal) {
+const fetchNutrition = async (meal) => {
   try {
-  setLoading(true);
-  setSelectedMeal(meal.idMeal);
-  const query = Array.from({ length: 20 }, (_, i) => i + 1)
-  .filter(i => meal[`strIngredient${i}`]?.trim())
-  .map(i => {
-    const ingredient = meal[`strIngredient${i}`].trim();
-    const measure = meal[`strMeasure${i}`]?.trim() || "";
-    // Strip fractions and extra descriptors
-    const cleanMeasure = measure
-      .replace(/[¼½¾⅓⅔⅛]/g, (m) => 
-        ({ "¼":"0.25","½":"0.5","¾":"0.75","⅓":"0.33","⅔":"0.67","⅛":"0.125" }[m]))
-      .replace(/[^a-zA-Z0-9.\s]/g, "")
-      .trim();
-    return `${cleanMeasure} ${ingredient}`;
-  })
-  .join(", ");
+      setLoading(true);
+      setSelectedMeal(meal.idMeal);
+      const query = Array.from({ length: 20 }, (_, i) => i + 1)
+        .filter((i) => meal[`strIngredient${i}`]?.trim())
+        .map((i) => {
+          const ingredient = meal[`strIngredient${i}`].trim();
+          const measure = meal[`strMeasure${i}`]?.trim() || "";
+          const cleanMeasure = measure
+            .replace(
+              /[¼½¾⅓⅔⅛]/g,
+              (m) =>
+                ({
+                  "¼": "0.25",
+                  "½": "0.5",
+                  "¾": "0.75",
+                  "⅓": "0.33",
+                  "⅔": "0.67",
+                  "⅛": "0.125",
+                })[m],
+            )
+            .replace(/[^a-zA-Z0-9.\s]/g, "")
+            .trim();
+          return `${cleanMeasure} ${ingredient}`;
+        })
+        .join(", ");
+
               
 
-  const response = await axios.get("https://api.calorieninjas.com/v1/nutrition", {
-  params: { query },
-  headers: { "X-Api-Key": appKey },
-});
+  const response = await axios.get(
+    "https://api.calorieninjas.com/v1/nutrition", 
+    {
+      params: { query },
+      headers: { "X-Api-Key": appKey },
+    }
+  );
 
-setNutrition(response.data.items);
+  setNutrition(response.data.items);
+  navigate("/nutrition");
   } catch (error) {
     console.error("Nutrition API error:", error);
     alert("There was an issue loading the nutrition data.");
@@ -88,41 +62,94 @@ setNutrition(response.data.items);
   }
 }
 
-    useEffect(() => {
-        fetchMeals('chicken');
-    },[])
+    useEffect(() => { 
+      console.log("Recipes useEffect running", searchTerm, selectedCategory, meals.length)
+      if (searchTerm) {
+        fetchMeals(searchTerm);
+      } else if (!selectedCategory && meals.length === 0) {
+        fetchMeals("chicken");
+      }
+    }, [searchTerm, selectedCategory])
+
+    const safeMeals = Array.isArray(meals) ? meals.map(meal=> ({
+      idMeal: meal.idMeal,
+      strMeal: meal.strMeal,
+      strMealThumb: meal.strMealThumb,
+      strArea: meal.strArea || "",
+      strInstructions: meal.strInstructions || "",
+    ...meal
+    })) : [];
 
     const start = (currentPage - 1) * pageSize
     const end = start + pageSize
-    const paginatedData = meals.slice(start, end)
+    const paginatedData = safeMeals?.slice(start, end) || [];
+    const totalPages = Math.ceil((meals?.length || 0) / pageSize);
 
 
   return (
     <>
-      {paginatedData.map(meal => (
-      <div className="recipe__wrapper" key={meal.idMeal}>
-          <h3 className="recipe__title">{meal.strMeal}</h3>
-          <h5 className="recipe__origin">{meal.strArea}</h5>
-          <div className="ingredients__wrapper">
-            {Array.from({length: 20}, (_, i) => i + 1)
-              .filter(i => meal[`strIngredient${i}`]?.trim())
-              .map(i => (
-                <li key={i}>{meal[`strIngredient${i}`]} - {meal[`strMeasure${i}`]}</li>
-              ))}
+      {paginatedData.length === 0 ? (
+        <p>No recipes found. Try searching for something else!</p>
+      ) : (
+        paginatedData.map((meal) => (
+          <div className="recipe__wrapper" key={meal.idMeal}>
+            <h3 className="recipe__title">{meal.strMeal}</h3>
+            <h5 className="recipe__origin">{meal.strArea}</h5>
+            <div className="ingredients__wrapper">
+              {Array.from({ length: 20 }, (_, i) => i + 1)
+                .filter((i) => meal[`strIngredient${i}`]?.trim())
+                .map((i) => (
+                  <li key={i}>
+                    {meal[`strIngredient${i}`]} - {meal[`strMeasure${i}`]}
+                  </li>
+                ))}
+            </div>
+            <p className="recipe__instructions">{meal.strInstructions}</p>
+            <figure className="meal__img--wrapper">
+              <img
+                src={meal.strMealThumb}
+                alt={meal.strMeal}
+                className="meal__img"
+              />
+            </figure>
+            <button
+              onClick={() => fetchNutrition(meal)}
+              disabled={loading && selectedMeal === meal.idMeal}
+            >
+              {loading && selectedMeal === meal.idMeal
+                ? "Loading..."
+                : "View Nutrition"}
+            </button>
           </div>
-          <p className="recipe__instructions">{meal.strInstructions}</p>
-          <figure className="meal__img--wrapper">
-              <img src={meal.strMealThumb} className="meal__img"/>
-          </figure>
-          <button onClick={() => {fetchNutrition(meal); navigate('/nutrition');}}>View Nutrition</button>
-          {loading && selectedMeal === meal.idMeal && <p>Loading nutrition data...</p>}
-          
-      </div>
-      ))}
-      <button onClick={() => {setCurrentPage(prev => prev - 1); window.scrollTo(0, 0); }} disabled={currentPage === 1}>Prev</button>
-      <button onClick={() => {setCurrentPage(prev => prev + 1); window.scrollTo(0, 0); }}>Next</button>
+        ))
+      )}
+      {paginatedData.length > 0 && (
+        <div className="pagination">
+          <button
+            onClick={() => {
+              setCurrentPage((prev) => prev - 1);
+              window.scrollTo(0, 0);
+            }}
+            disabled={currentPage === 1}
+          >
+            Prev
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => {
+              setCurrentPage((prev) => prev + 1);
+              window.scrollTo(0, 0);
+            }}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </>
-  )
-}
+  );
+};
 
-export default Recipes
+export default Recipes;
