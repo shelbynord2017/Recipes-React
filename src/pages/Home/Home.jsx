@@ -14,8 +14,9 @@ const Home = ({ onSearch, setSearchTerm, searchTerm, fetchByCategory }) => {
 
 
   useEffect(() => {
+    console.log(window.location.search)
     const params = new URLSearchParams(window.location.search);
-    const query = params.get("query");
+    const query = params.get("search");
     if (query) {
         setSearchTerm(query);
     }

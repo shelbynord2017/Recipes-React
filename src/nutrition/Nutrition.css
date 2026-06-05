@@ -2,6 +2,7 @@
     margin-left: 40px;
     margin-top: 20px;
     height: 80vh;
+    margin-bottom: 100px;
 }
 .nutrition__title{
     margin-bottom: 10px;
@@ -9,4 +10,20 @@
 .nutrition__ingredient--row{
     margin-top: 5px;
     list-style: none;
+}
+
+@media(max-width: 768px){
+    .nutrition__wrapper{
+        margin-bottom: 80%;
+        margin-right: 10px;
+    }
+    .nutrition__ingredient--row{
+        margin-top: 8px;
+        line-height: 1.25;
+    }
+}
+@media(max-width: 550px){
+    .nutrition__wrapper{
+        margin-bottom: 150%;
+    }
 }

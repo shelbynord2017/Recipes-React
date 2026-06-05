@@ -2,12 +2,14 @@ import './Recipes.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Nutrition from '../../nutrition/Nutrition';
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Footer from '../../components/Footer/Footer';
 import Navbar from '../../components/Navbar/Navbar';
 
 
-const Recipes = ({ meals, setNutrition, fetchMeals, searchTerm, selectedCategory }) => {
+const Recipes = ({ meals, setNutrition, fetchMeals, selectedCategory }) => {
+    const location = useLocation();
+    const searchTerm = new URLSearchParams(location.search).get("search");
     const navigate = useNavigate();
     const appKey = import.meta.env.VITE_CALORIENINJA_KEY;
 
@@ -71,7 +73,7 @@ const fetchNutrition = async (meal) => {
       } else if (!selectedCategory && meals.length === 0) {
         fetchMeals("chicken");
       }
-    }, [searchTerm, selectedCategory])
+    }, [searchTerm, selectedCategory, fetchMeals])
 
     const safeMeals = Array.isArray(meals) ? meals.map(meal=> ({
       idMeal: meal.idMeal,

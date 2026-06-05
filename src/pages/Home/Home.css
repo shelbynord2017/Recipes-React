@@ -70,6 +70,7 @@
 }
 .text__color{
     color: rgb(47, 96, 47);
+    font-weight: bold;
 }
 
 /* CATEGORIES */
@@ -89,4 +90,21 @@
 }
 .home__categories li:hover{
     text-decoration: underline;
+}
+
+@media(max-width: 768px){
+    .home__title{
+        font-size: 26px;
+        width: 50%;
+        text-align: center;
+    }
+    .home__subtitle{
+        font-size: 20px;
+    }
+    .home__para{
+        width: 70%;
+    }
+}
+
+@media(max-width: 550px){
 }

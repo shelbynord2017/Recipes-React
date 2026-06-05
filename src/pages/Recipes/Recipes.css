@@ -122,3 +122,12 @@
     margin-right: 10px;
     margin-left: 10px;
 }
+
+@media(max-width: 768px){
+    .recipe__instructions{
+        width: 80%;
+    }
+    .meal__img{
+        width: 80%;
+    }
+}

@@ -27,10 +27,11 @@ function App() {
     }
   };
 
-  const onSearch = () => {
+  const onSearch = (searchValue) => {
+    setSearchTerm(searchValue)
     setSelectedCategory("")
-    fetchMeals(searchTerm);
-    navigate("/recipes");
+    fetchMeals(searchValue);
+    navigate(`/recipes?search=${searchValue}`);
   };
 
   const fetchByCategory = async (category)=> {
@@ -81,7 +82,6 @@ function App() {
               setNutrition={setNutrition}
               fetchMeals={fetchMeals}  
               selectedCategory={selectedCategory}
-              searchTerm={searchTerm}
               />} 
             />
           <Route path="/nutrition" element={

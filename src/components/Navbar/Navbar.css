@@ -46,3 +46,9 @@
     text-decoration: underline;
 }
 
+@media(max-width: 768px){
+    .nav__links{
+        gap: 10px;
+    }
+}
+
