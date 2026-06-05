@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './Home.css'
 import Navbar from '../../components/Navbar/Navbar'
 import search_icon from '../../assets/search.png'
@@ -8,10 +8,18 @@ import Footer from '../../components/Footer/Footer'
 
 const Home = ({ onSearch, setSearchTerm, searchTerm, fetchByCategory }) => {
   const handleSearchClick = () => {
+    sessionStorage.setItem("lastSearch", searchTerm);
     onSearch(searchTerm);
   };
 
-  sessionStorage.setItem("lastSearch", searchInput);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get("query");
+    if (query) {
+        setSearchTerm(query);
+    }
+  }, []);
  
 
   return (

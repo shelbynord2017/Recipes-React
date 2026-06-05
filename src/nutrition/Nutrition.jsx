@@ -2,6 +2,7 @@ import React from 'react';
 import './Nutrition.css';
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
+import { useNavigate } from 'react-router-dom';
 
 const Nutrition = ({ nutrition }) => {
   if (!nutrition) {
@@ -9,11 +10,17 @@ const Nutrition = ({ nutrition }) => {
   }
 
   const lastSearch = sessionStorage.getItem("lastSearch");
+  const navigate = useNavigate();
+
+  function goBack() {
+    const lastSearch = sessionStorage.getItem("lastSearch");
+    navigate(`/?query=${lastSearch}`);
+  }
 
   return (
     <>
     <Navbar/>
-    <button className="back__btn" onClick={() =>navigate('/')}>Back</button>
+    <button className="back__btn" onClick={() =>navigate(`/?query=${lastSearch}`)}>Back</button>
     <div className='nutrition__wrapper'>
       <h4 className='nutrition__title'>Nutrition Facts</h4>
         {nutrition.map((item, index) => (
@@ -35,13 +42,3 @@ const Nutrition = ({ nutrition }) => {
 };
 
 export default Nutrition;
-
-
-
-//  <p>Calories: {nutrition.calories}</p>
-//       <h5>Total Nutrients</h5>
-//       <ul>
-//         {nutrition.totalNutrients && Object.values(nutrition.totalNutrients).map(nutrient => (
-//           <li key={nutrient.label}>{nutrient.label}: {nutrient.quantity.toFixed(2)} {nutrient.unit}</li>
-//         ))}
-//       </ul>
