@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Nutrition from '../../nutrition/Nutrition';
 import { useNavigate } from 'react-router-dom'
+import Footer from '../../components/Footer/Footer';
+import Navbar from '../../components/Navbar/Navbar';
 
 
 const Recipes = ({ meals, setNutrition, fetchMeals, searchTerm, selectedCategory }) => {
@@ -88,6 +90,8 @@ const fetchNutrition = async (meal) => {
 
   return (
     <>
+      <Navbar/>
+      <button className="back__btn" onClick={() =>navigate('/')}>Back</button>
       {paginatedData.length === 0 ? (
         <p>No recipes found. Try searching for something else!</p>
       ) : (
@@ -99,20 +103,14 @@ const fetchNutrition = async (meal) => {
               {Array.from({ length: 20 }, (_, i) => i + 1)
                 .filter((i) => meal[`strIngredient${i}`]?.trim())
                 .map((i) => (
-                  <li key={i}>
+                  <li className="ingredients" key={i}>
                     {meal[`strIngredient${i}`]} - {meal[`strMeasure${i}`]}
                   </li>
                 ))}
             </div>
             <p className="recipe__instructions">{meal.strInstructions}</p>
-            <figure className="meal__img--wrapper">
-              <img
-                src={meal.strMealThumb}
-                alt={meal.strMeal}
-                className="meal__img"
-              />
-            </figure>
             <button
+              className='nutrition__btn'
               onClick={() => fetchNutrition(meal)}
               disabled={loading && selectedMeal === meal.idMeal}
             >
@@ -120,12 +118,20 @@ const fetchNutrition = async (meal) => {
                 ? "Loading..."
                 : "View Nutrition"}
             </button>
+            <figure className="meal__img--wrapper">
+              <img
+                src={meal.strMealThumb}
+                alt={meal.strMeal}
+                className="meal__img"
+              />
+            </figure>
           </div>
         ))
       )}
       {paginatedData.length > 0 && (
-        <div className="pagination">
+        <div className="pagination btns">
           <button
+            className='prev__btn'
             onClick={() => {
               setCurrentPage((prev) => prev - 1);
               window.scrollTo(0, 0);
@@ -134,10 +140,11 @@ const fetchNutrition = async (meal) => {
           >
             Prev
           </button>
-          <span>
+          <span className='page__number'>
             Page {currentPage} of {totalPages}
           </span>
           <button
+          className='next__btn'
             onClick={() => {
               setCurrentPage((prev) => prev + 1);
               window.scrollTo(0, 0);
@@ -148,6 +155,7 @@ const fetchNutrition = async (meal) => {
           </button>
         </div>
       )}
+    <Footer/>
     </>
   );
 };

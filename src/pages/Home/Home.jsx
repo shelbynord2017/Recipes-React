@@ -10,6 +10,8 @@ const Home = ({ onSearch, setSearchTerm, searchTerm, fetchByCategory }) => {
   const handleSearchClick = () => {
     onSearch(searchTerm);
   };
+
+  sessionStorage.setItem("lastSearch", searchInput);
  
 
   return (
@@ -21,8 +23,8 @@ const Home = ({ onSearch, setSearchTerm, searchTerm, fetchByCategory }) => {
         </div>
         <div className="home__description">
           <h2 className="home__subtitle">Discover delicious recipes from every corner of the globe!</h2>
-          <p className="home__para">Explore a world of flavors and culinary traditions in all of your favorite categories. 
-            There is a dish for everyone at every level! Search from our collections that include step-by-step instructions and nutritional information.
+          <p className="home__para">Explore a world of flavors and culinary traditions in all of your <span className='text__color'>favorite categories</span>. 
+            There is a dish for everyone at every level! Search from our collections that include <span className='text__color'>step-by-step instructions</span> and <span className='text__color'>nutritional information</span>.
           </p>
         </div>
         
@@ -50,7 +52,7 @@ const Home = ({ onSearch, setSearchTerm, searchTerm, fetchByCategory }) => {
           <ul>
             <li onClick={()=> fetchByCategory("Seafood")}>Seafood</li>
             <li onClick={()=> fetchByCategory("Dessert")}>Dessert</li>
-            <li onClick={()=> fetchByCategory("Pasta")}>Pasta</li>
+            <li onClick={()=> fetchByCategory("Starter")}>Starter</li>
             <li onClick={()=> fetchByCategory("Chicken")}>Chicken</li>
           </ul>
         </div>

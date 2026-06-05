@@ -1,7 +1,7 @@
 .nav__container,
 .nav__row {
     width: 100%;
-  height: 100px;
+  height: 120px;
   display: flex;
 }
 
@@ -21,7 +21,9 @@
 }
 
 .nav__logo--img {
-    height: 70px;
+    height: 120px;
+    mix-blend-mode: multiply;
+    
 }
 
 .nav__links {

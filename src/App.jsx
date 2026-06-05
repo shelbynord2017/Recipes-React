@@ -81,6 +81,7 @@ function App() {
               setNutrition={setNutrition}
               fetchMeals={fetchMeals}  
               selectedCategory={selectedCategory}
+              searchTerm={searchTerm}
               />} 
             />
           <Route path="/nutrition" element={

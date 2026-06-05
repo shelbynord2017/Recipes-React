@@ -1,0 +1,12 @@
+.nutrition__wrapper{
+    margin-left: 40px;
+    margin-top: 20px;
+    height: 80vh;
+}
+.nutrition__title{
+    margin-bottom: 10px;
+}
+.nutrition__ingredient--row{
+    margin-top: 5px;
+    list-style: none;
+}

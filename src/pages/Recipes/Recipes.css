@@ -1,3 +1,18 @@
+.back__btn{
+    background-color: rgb(88, 128, 88);
+    color: white;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    width: 80px;
+    height: 40px;
+    padding: 8px 12px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 300ms ease;
+    margin-left: 20px;
+    margin-top: 20px;
+}
 .recipe__wrapper {
     margin: 0 auto;
     display: flex;
@@ -10,7 +25,7 @@
     text-align: center;
     font-size: 24px;
     font-weight: 700;
-    margin-top: 100px;
+    margin-top: 50px;
     color: rgb(47, 96, 47);
 }
 
@@ -54,11 +69,56 @@
     width: 100%;
     max-width: 600px;
     overflow: hidden;
-    margin-top: 50px;
+    margin-top: 20px;
+    margin-bottom: 50px;
     border-radius: 10px;
 }
 
 .meal__img {
     width: 100%;
     max-width: 600px;
+}
+.nutrition__btn{
+    background-color: rgb(169, 101, 23);
+    border: none;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    width: 120px;
+    padding: 8px 12px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 300ms ease;
+}
+.btns{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    margin-bottom: 60px;
+}
+.prev__btn, 
+.next__btn {
+    background-color: rgb(88, 128, 88);
+    color: white;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    width: 80px;
+    height: 40px;
+    padding: 8px 12px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 300ms ease;
+}
+.next__btn:hover,
+.prev__btn:hover{
+    background-color:rgb(102, 145, 102);
+    scale: 1.05;
+}
+.page__number{
+    margin-right: 10px;
+    margin-left: 10px;
 }
