@@ -17,6 +17,8 @@ const Recipes = ({ meals, setNutrition, fetchMeals, selectedCategory }) => {
     const pageSize = 5
     const [loading, setLoading] = useState(false);
     const [selectedMeal, setSelectedMeal] = useState(null);
+    const [sortOrder, setSortOrder] = useState('')
+
 
 const fetchNutrition = async (meal) => {
   try {
@@ -45,8 +47,6 @@ const fetchNutrition = async (meal) => {
           return `${cleanMeasure} ${ingredient}`;
         })
         .join(", ");
-
-              
 
   const response = await axios.get(
     "https://api.calorieninjas.com/v1/nutrition", 
@@ -84,16 +84,33 @@ const fetchNutrition = async (meal) => {
     ...meal
     })) : [];
 
+    const sortedMeals = [...safeMeals].sort((a,b) => {
+    if (sortOrder === 'A_TO_Z') {
+      return a.strMeal.localeCompare(b.strMeal);
+    }
+    if (sortOrder === 'Z_TO_A') {
+      return b.strMeal.localeCompare(a.strMeal);
+    }
+    return 0;
+  });
+
     const start = (currentPage - 1) * pageSize
     const end = start + pageSize
-    const paginatedData = safeMeals?.slice(start, end) || [];
+    const paginatedData = sortedMeals.slice(start, end) || [];
     const totalPages = Math.ceil((meals?.length || 0) / pageSize);
 
 
   return (
     <>
       <Navbar/>
-      <button className="back__btn" onClick={() =>navigate('/')}>Back</button>
+      <div className='sorting'>
+        <button className="back__btn" onClick={() =>navigate('/')}>Back</button>
+        <select id="filter" defaultValue="DEFAULT" onChange={(event) => setSortOrder(event.target.value)} >
+          <option className="filter__text" value="DEFAULT">Sort</option>
+          <option className="filter__text" value="A_TO_Z">A to Z</option>
+          <option className="filter__text" value="Z_TO_A">Z to A</option>
+        </select>
+      </div>
       {paginatedData.length === 0 ? (
         <p>No recipes found. Try searching for something else!</p>
       ) : (

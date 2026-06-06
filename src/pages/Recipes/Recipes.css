@@ -1,3 +1,10 @@
+.sorting{
+    display: flex;
+    justify-content: space-between;
+}
+.filter__text{
+    font-size: 14px;
+}
 .back__btn{
     background-color: rgb(88, 128, 88);
     color: white;
@@ -13,6 +20,23 @@
     margin-left: 20px;
     margin-top: 20px;
 }
+#filter {
+    background-color: rgb(224, 233, 224);
+    font-size: 16px;
+    border-radius: 50px;
+    border: 2px solid rgb(102, 145, 102);
+    padding: 8px 12px;
+    width: 150px;
+    margin-top: 20px;
+    margin-right: 40px;
+    position: relative;
+    transition: all 300ms ease;
+}
+
+#filter:hover {
+    background-color: rgb(234, 246, 234);
+}
+
 .recipe__wrapper {
     margin: 0 auto;
     display: flex;
